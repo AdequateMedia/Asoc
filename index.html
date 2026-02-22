@@ -360,6 +360,7 @@
     .action-btn.share { background: var(--accent-olive); }
     .action-btn.print { background: var(--primary-light); color: #2e2a27; }
     .action-btn.like { background: var(--accent-terra); }
+    .action-btn.listen { background: #5d6d7e; }  /* slate blue for listen */
     .action-btn:hover { transform: translateY(-3px); filter: brightness(1.05); }
 
     .daily-quote-card {
@@ -642,11 +643,12 @@
         </div>
       </div>
 
-      <!-- Action Buttons -->
+      <!-- Action Buttons (Share, Print, Like, and the enhanced Listen button) -->
       <div class="action-buttons">
         <button class="action-btn share" id="shareBtn"><i class="fas fa-share-alt"></i> Share</button>
         <button class="action-btn print" id="printBtn"><i class="fas fa-print"></i> Print</button>
-        <button class="action-btn like" id="likeBtn"><i class="fas fa-heart"></i> Like <span id="likeCount">143</span></button>
+        <button class="action-btn like" id="likeBtn"><i class="fas fa-heart"></i> Like <span id="likeCount">000</span></button>
+        <button class="action-btn listen" id="listenBtn"><i class="fas fa-headphones-alt"></i> Listen</button>
       </div>
 
       <!-- Daily Quote -->
@@ -663,13 +665,15 @@
         </div>
       </div>
 
-      <!-- Devotional Message -->
+      <!-- Devotional Message (with id for text extraction) -->
       <div style="background: #fffcf9; padding: 2.5rem; border-radius: 2rem; box-shadow: var(--shadow-sm);">
         <h3 style="font-size: 2rem; margin-bottom: 1.5rem;">Devotional Message</h3>
-        <p>The birthright was the greatest treasure in an ancient family – it carried the covenant, the inheritance, and the spiritual blessing. Yet Esau, exhausted and hungry, treated it as worthless. He exchanged eternity for a moment's satisfaction. How many of us do the same today? We trade our spiritual inheritance – peace, purity, purpose – for the temporary pleasure of sin, the approval of people, or the rush of the world.</p>
-        <p style="margin-top: 1.2rem;">Reverend Mrs. Debby F. A. Solomon often warns: "The enemy does not need to steal your birthright; he only needs to make you despise it." When we neglect prayer, despise fellowship, or justify compromise, we are despising the very thing that positions us for destiny.</p>
-        <p style="margin-top: 1.2rem;">But there is hope. Unlike Esau, we have an advocate – Jesus, the firstborn among many brethren. He restores the birthright to all who repent and return to the Father. Today, examine your heart: are you holding onto your spiritual heritage, or are you about to trade it for a bowl of stew?</p>
-        <p style="margin-top: 1.2rem;">Rise up, child of God. Guard your birthright with prayer, with the Word, and with holy determination. What God has promised is too great to let slip.</p>
+        <div id="devotional-text-content">
+          <p>The birthright was the greatest treasure in an ancient family – it carried the covenant, the inheritance, and the spiritual blessing. Yet Esau, exhausted and hungry, treated it as worthless. He exchanged eternity for a moment's satisfaction. How many of us do the same today? We trade our spiritual inheritance – peace, purity, purpose – for the temporary pleasure of sin, the approval of people, or the rush of the world.</p>
+          <p style="margin-top: 1.2rem;">Reverend Mrs. Debby F. A. Solomon often warns: "The enemy does not need to steal your birthright; he only needs to make you despise it." When we neglect prayer, despise fellowship, or justify compromise, we are despising the very thing that positions us for destiny.</p>
+          <p style="margin-top: 1.2rem;">But there is hope. Unlike Esau, we have an advocate – Jesus, the firstborn among many brethren. He restores the birthright to all who repent and return to the Father. Today, examine your heart: are you holding onto your spiritual heritage, or are you about to trade it for a bowl of stew?</p>
+          <p style="margin-top: 1.2rem;">Rise up, child of God. Guard your birthright with prayer, with the Word, and with holy determination. What God has promised is too great to let slip.</p>
+        </div>
       </div>
 
       <!-- Prayer Points -->
@@ -728,14 +732,14 @@
         <div class="contact-card">
           <i class="fas fa-envelope" style="font-size: 2rem; color: var(--primary);"></i>
           <h3 style="margin: 1rem 0;">Email</h3>
-          <p>trueworshippers.ministries</br>@gmail.com</p>   <!-- updated email -->
+          <p>trueworshippers.ministries<br>@gmail.com</p>   <!-- updated email -->
         </div>
         <div class="contact-card">
           <i class="fas fa-share-alt" style="font-size: 2rem; color: var(--primary);"></i>
           <h3 style="margin: 1rem 0;">Social</h3>
           <div class="contact-social">
             <a href="#"><i class="fab fa-facebook"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a></br>
+            <a href="#"><i class="fab fa-instagram"></i></a><br>
             <a href="#"><i class="fab fa-youtube"></i></a>
             <a href="#"><i class="fab fa-telegram"></i></a>
           </div>
@@ -744,16 +748,14 @@
 
       <!-- Netlify Form -->
       <div class="contact-form">
-        <h3 style="font-size: 2rem; margin-bottom: 2rem; text-align: center;">Send us a message</h3>
+        <h3 style="font-size: 2rem; margin-bottom: 2rem; text-align: center;">Send your Prayer Request</h3>
         <form name="contact" method="POST" data-netlify="true">
           <input type="hidden" name="form-name" value="contact" />
           <label>Your Name: <input type="text" name="name" required /></label>
           <label>Your Email: <input type="email" name="email" required /></label>
-          
-          </label>
-          <label>Message: <textarea name="message" rows="4" required></textarea></label>
+          <label>Prayer Request: <textarea name="Prayer Request" rows="10" required></textarea></label>
           <p>
-            <button type="submit">Send Message</button>
+            <button type="submit">Submit your request</button>
           </p>
         </form>
       </div>
@@ -775,9 +777,10 @@
   <!-- Back to Top -->
   <a href="#" class="back-to-top"><i class="fas fa-arrow-up"></i></a>
 
-  <!-- JS for share/print/like -->
+  <!-- JS for share/print/like/listen with audio link support -->
   <script>
     (function() {
+      // Share button
       const shareBtn = document.getElementById('shareBtn');
       shareBtn.addEventListener('click', function() {
         if (navigator.share) {
@@ -786,9 +789,12 @@
           navigator.clipboard?.writeText(window.location.href).then(() => alert('Link copied!'));
         }
       });
+
+      // Print button
       document.getElementById('printBtn').addEventListener('click', () => window.print());
 
-      let likeCount = 143, liked = false;
+      // Like button
+      let likeCount = 000, liked = false;
       const likeBtn = document.getElementById('likeBtn');
       const likeSpan = document.getElementById('likeCount');
       likeBtn.addEventListener('click', function() {
@@ -796,6 +802,92 @@
         likeCount += liked ? 1 : -1;
         likeSpan.textContent = likeCount;
         likeBtn.style.backgroundColor = liked ? '#b2472e' : 'var(--accent-terra)';
+      });
+
+      // ---------- Listen button with audio link support ----------
+      const listenBtn = document.getElementById('listenBtn');
+
+      // 🔽 SET YOUR AUDIO FILE URL HERE (leave empty to use text-to-speech)
+      const audioUrl = '';  // e.g., 'https://example.com/sermon.mp3'
+
+      let utterance = null;
+      let audioPlayer = null;
+
+      // Helper to reset button to "Listen" state
+      function resetButton() {
+        listenBtn.innerHTML = '<i class="fas fa-headphones-alt"></i> Listen';
+      }
+
+      // Stop any ongoing playback (both TTS and audio)
+      function stopPlayback() {
+        if (window.speechSynthesis && window.speechSynthesis.speaking) {
+          window.speechSynthesis.cancel();
+        }
+        if (audioPlayer) {
+          audioPlayer.pause();
+          audioPlayer.currentTime = 0;
+          audioPlayer = null;
+        }
+        resetButton();
+      }
+
+      listenBtn.addEventListener('click', function() {
+        // If something is playing, stop it
+        if ((window.speechSynthesis && window.speechSynthesis.speaking) || audioPlayer) {
+          stopPlayback();
+          return;
+        }
+
+        // If an audio URL is provided, use it
+        if (audioUrl && audioUrl.trim() !== '') {
+          audioPlayer = new Audio(audioUrl);
+          audioPlayer.play().catch(e => {
+            alert('Could not play audio. The link may be invalid or unsupported.');
+            audioPlayer = null;
+            resetButton();
+          });
+
+          listenBtn.innerHTML = '<i class="fas fa-stop"></i> Stop';
+
+          audioPlayer.onended = function() {
+            audioPlayer = null;
+            resetButton();
+          };
+          audioPlayer.onerror = function() {
+            alert('Audio playback error.');
+            audioPlayer = null;
+            resetButton();
+          };
+          return;
+        }
+
+        // Fallback to text-to-speech
+        if (!window.speechSynthesis) {
+          alert('Sorry, your browser does not support text-to-speech.');
+          return;
+        }
+
+        const textElem = document.getElementById('devotional-text-content');
+        if (!textElem) return;
+        const text = textElem.innerText.trim();
+        if (text === '') return;
+
+        utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        utterance.pitch = 1;
+
+        utterance.onstart = function() {
+          listenBtn.innerHTML = '<i class="fas fa-stop"></i> Stop';
+        };
+        utterance.onend = function() {
+          resetButton();
+        };
+        utterance.onerror = function() {
+          resetButton();
+        };
+
+        window.speechSynthesis.speak(utterance);
       });
     })();
   </script>
