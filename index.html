@@ -261,7 +261,7 @@
       transition: 0.3s;
     }
 
-    /* VISION & MISSIONS - IMPROVED CARDS */
+    /* Vision cards */
     .vision-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -295,10 +295,6 @@
       margin-bottom: 1rem;
       color: var(--primary-dark);
     }
-    .vision-card p {
-      color: var(--text-muted);
-      flex: 1;
-    }
     .vision-card .scripture {
       margin-top: 1.2rem;
       font-style: italic;
@@ -308,7 +304,7 @@
       font-size: 0.95rem;
     }
 
-    /* devotional area (polished) */
+    /* devotional area */
     .devotional-day {
       background: white;
     }
@@ -436,11 +432,12 @@
       box-shadow: var(--shadow-sm);
     }
 
-    /* contact */
+    /* contact & form */
     .contact-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 2rem;
+      margin-bottom: 3rem;
     }
     .contact-card {
       background: white;
@@ -456,6 +453,56 @@
       transition: 0.2s;
     }
     .contact-social a:hover { color: var(--accent-terra); }
+
+    /* netlify form */
+    .contact-form {
+      background: white;
+      padding: 3rem;
+      border-radius: var(--radius-card);
+      border: var(--border-light);
+      max-width: 700px;
+      margin: 2rem auto 0;
+    }
+    .contact-form label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--primary-dark);
+    }
+    .contact-form input,
+    .contact-form select,
+    .contact-form textarea {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      border: 1px solid #d4c5b6;
+      border-radius: 60px;
+      font-family: 'Inter', sans-serif;
+      margin-bottom: 1.5rem;
+      background: #fefcf9;
+    }
+    .contact-form textarea {
+      border-radius: 2rem;
+      resize: vertical;
+    }
+    .contact-form select[multiple] {
+      height: auto;
+      min-height: 100px;
+      border-radius: 2rem;
+      padding: 1rem;
+    }
+    .contact-form button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 1rem 2.5rem;
+      border-radius: 60px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .contact-form button:hover {
+      background-color: var(--primary-dark);
+    }
 
     /* footer */
     .footer {
@@ -547,34 +594,30 @@
     </div>
   </section>
 
-  <!-- VISION & MISSIONS - ENHANCED SECTION -->
+  <!-- Vision & Missions -->
   <section id="vision" style="background: #fcf6f0;">
     <div class="container">
       <h2 class="section-title">Vision & Missions</h2>
       <div class="section-subhead">Our divine mandate and core callings as a ministry</div>
       <div class="vision-grid">
-        <!-- Vision Card -->
         <div class="vision-card">
           <i class="fas fa-eye"></i>
           <h3>Vision</h3>
           <p>To raise a global family of authentic worshipers whose lives reflect the nature of the Father and who impact their world with the Gospel. We envision believers walking in spiritual maturity, cultural influence, and kingdom purpose.</p>
           <div class="scripture">"That they may be called oaks of righteousness, the planting of the Lord, that he may be glorified." — Isaiah 61:3</div>
         </div>
-        <!-- Worship Card -->
         <div class="vision-card">
           <i class="fas fa-pray"></i>
           <h3>Worship</h3>
           <p>Igniting authentic worship through praise, prayer, and the Word, drawing believers into deeper intimacy with God and creating an atmosphere for His presence. We equip worship leaders and intercessors to lead with passion and truth.</p>
           <div class="scripture">"God is spirit, and those who worship him must worship in spirit and truth." — John 4:24</div>
         </div>
-        <!-- Discipleship Card -->
         <div class="vision-card">
           <i class="fas fa-seedling"></i>
           <h3>Discipleship</h3>
           <p>Establishing every believer in their identity in Christ through systematic teaching, life-transforming relationships, and the daily devotional "Sequences of God." We build foundations for spiritual growth and leadership development.</p>
           <div class="scripture">"Go therefore and make disciples of all nations... teaching them to observe all that I have commanded you." — Matthew 28:19-20</div>
         </div>
-        <!-- Outreach Card -->
         <div class="vision-card">
           <i class="fas fa-hand-holding-heart"></i>
           <h3>Outreach & Missions</h3>
@@ -585,17 +628,17 @@
     </div>
   </section>
 
-  <!-- DEVOTIONAL SECTION (full content) -->
+  <!-- DEVOTIONAL SECTION (24 Feb 2026 - The Battle for the Birthright) -->
   <section id="devotionals" class="devotional-day">
     <div class="container">
       <div class="devotional-header">
-        <span class="devotional-date"><i class="far fa-calendar-alt"></i> 23rd February 2026</span>
-        <h1 class="devotional-title">Who's Son Are You?</h1>
+        <span class="devotional-date"><i class="far fa-calendar-alt"></i> 24th February 2026</span>
+        <h1 class="devotional-title">The Battle for the Birthright</h1>
         <div class="devotional-authors">
           Apostle Segun D. A. & Reverend Mrs. Debby F. A. Solomon
         </div>
         <div style="background: #fcf4ec; padding: 0.8rem 2rem; border-radius: 60px; display: inline-block; margin-top: 1rem;">
-          <i class="fas fa-music" style="color: var(--accent-terra);"></i> Hymn: “I’m a Child of the King”
+          <i class="fas fa-music" style="color: var(--accent-terra);"></i> Hymn: “The Battle Belongs to the Lord”
         </div>
       </div>
 
@@ -603,47 +646,46 @@
       <div class="action-buttons">
         <button class="action-btn share" id="shareBtn"><i class="fas fa-share-alt"></i> Share</button>
         <button class="action-btn print" id="printBtn"><i class="fas fa-print"></i> Print</button>
-        <button class="action-btn like" id="likeBtn"><i class="fas fa-heart"></i> Like <span id="likeCount">128</span></button>
+        <button class="action-btn like" id="likeBtn"><i class="fas fa-heart"></i> Like <span id="likeCount">143</span></button>
       </div>
 
       <!-- Daily Quote -->
       <div class="daily-quote-card">
         <i class="fas fa-quote-left" style="color: var(--accent-terra); margin-right: 1rem;"></i>
-        "Your behavior is the loudspeaker of your paternity. You cannot be fathered by God and fathered by the world; your actions will always announce who truly owns you." – Apostle Segun D. A. Solomon
+        "Your birthright is not just a blessing – it is an identity. Esau traded his for a meal; don't trade yours for the approval of men." – Apostle Segun D. A. Solomon
       </div>
 
       <!-- Bible Passage -->
       <div class="bible-passage">
-        <h4><i class="fas fa-bible"></i> John 8:39-47 (NKJV)</h4>
+        <h4><i class="fas fa-bible"></i> Genesis 25:29-34 (NKJV)</h4>
         <div style="background: #fffcf8; padding: 1.5rem; border-radius: 1.5rem; margin-top: 1rem;">
-          They answered and said to Him, “Abraham is our father.” Jesus said to them, “If you were Abraham’s children, you would do the works of Abraham. But now you seek to kill Me, a Man who has told you the truth which I heard from God. Abraham did not do this. You do the deeds of your father.”... He who is of God hears God’s words; therefore you do not hear, because you are not of God.
+          Now Jacob cooked a stew; and Esau came in from the field, and he was weary. And Esau said to Jacob, “Please feed me with that same red stew, for I am weary.” But Jacob said, “Sell me your birthright as of this day.” And Esau said, “Look, I am about to die; so what is this birthright to me?” ... Then Jacob gave Esau bread and stew of lentils; then he ate and drank, arose, and went his way. Thus Esau despised his birthright.
         </div>
       </div>
 
       <!-- Devotional Message -->
       <div style="background: #fffcf9; padding: 2.5rem; border-radius: 2rem; box-shadow: var(--shadow-sm);">
         <h3 style="font-size: 2rem; margin-bottom: 1.5rem;">Devotional Message</h3>
-        <p>In the natural realm, lineage determines inheritance, rights, and often, behavior. In the spiritual realm, lineage determines destiny. The Pharisees in our text today were confident in their biological and religious pedigree. They boasted, "Abraham is our father." But Jesus, the discerner of thoughts, looked past their flesh and into their spirits and posed a question that shook the foundation of their identity: "Who's son are you?" He essentially told them, Your actions don't match your claims.</p>
-        <p style="margin-top: 1.2rem;">Many believers today walk in a similar identity crisis. We carry the Bible, sing the hymns, and wear the label "Christian," but our character, our speech, and our secret lives often tell a different story. We claim God as our Father, yet we display the temper, the pride, the dishonesty, and the lust of the world. As Reverend Mrs. Debby F. A. Solomon often teaches, "You cannot draw water from a bitter well and claim it is sweet; the source is revealed by the taste."</p>
-        <p style="margin-top: 1.2rem;">Jesus drew a clear line of demarcation: If God were your Father, you would love Me and obey the truth. If the devil were your father, you would fulfill his lusts—which include lies, murder, and a rejection of truth.</p>
-        <p style="margin-top: 1.2rem;">This devotion calls you to a spiritual paternity test. It is not enough to say you are born again; your life must exhibit the family resemblance of the One who is Spirit. Are you loving? God is love. Are you truthful? God is truth. Are you peaceful? God is not the author of confusion. When the pressure is on, what comes out of you reveals who is actually inside you.</p>
-        <p style="margin-top: 1.2rem;">Today, decide to align your conduct with your confession. Let the world see that you are indeed a son or daughter of the Most High, not by your boasting, but by your bearing of His image.</p>
+        <p>The birthright was the greatest treasure in an ancient family – it carried the covenant, the inheritance, and the spiritual blessing. Yet Esau, exhausted and hungry, treated it as worthless. He exchanged eternity for a moment's satisfaction. How many of us do the same today? We trade our spiritual inheritance – peace, purity, purpose – for the temporary pleasure of sin, the approval of people, or the rush of the world.</p>
+        <p style="margin-top: 1.2rem;">Reverend Mrs. Debby F. A. Solomon often warns: "The enemy does not need to steal your birthright; he only needs to make you despise it." When we neglect prayer, despise fellowship, or justify compromise, we are despising the very thing that positions us for destiny.</p>
+        <p style="margin-top: 1.2rem;">But there is hope. Unlike Esau, we have an advocate – Jesus, the firstborn among many brethren. He restores the birthright to all who repent and return to the Father. Today, examine your heart: are you holding onto your spiritual heritage, or are you about to trade it for a bowl of stew?</p>
+        <p style="margin-top: 1.2rem;">Rise up, child of God. Guard your birthright with prayer, with the Word, and with holy determination. What God has promised is too great to let slip.</p>
       </div>
 
       <!-- Prayer Points -->
       <div class="prayer-points">
         <h3 style="font-size: 2.2rem;"><i class="fas fa-praying-hands" style="color: var(--primary);"></i> Prophetic Prayer Points</h3>
         <div class="prayer-grid">
-          <div class="prayer-item"><i class="fas fa-check-circle"></i> Father, I thank You because I am not a bastard but a legitimate child of the Most High God, bought by the blood of Jesus.</div>
-          <div class="prayer-item"><i class="fas fa-check-circle"></i> Lord, expose and uproot every seed of the wicked one planted in my life that does not reflect Your image.</div>
-          <div class="prayer-item"><i class="fas fa-check-circle"></i> I break and renounce every inherited negative trait from my earthly lineage that contradicts my identity in Christ.</div>
-          <div class="prayer-item"><i class="fas fa-check-circle"></i> Father, give me the grace to love what You love and hate what You hate, aligning my heart perfectly with Yours.</div>
-          <div class="prayer-item"><i class="fas fa-check-circle"></i> I silence the voice of the enemy that tries to speak through my flesh, and I amplify the voice of the Holy Spirit within me.</div>
-          <div class="prayer-item"><i class="fas fa-check-circle"></i> Lord, let the fruit of the Spirit (love, joy, peace) become the undeniable evidence of my divine paternity.</div>
-          <div class="prayer-item"><i class="fas fa-check-circle"></i> I reject the spirit of deception and lying; I embrace the truth, for I am of the Father of Truth.</div>
-          <div class="prayer-item"><i class="fas fa-check-circle"></i> Every ungodly character that does not represent my Father in Heaven, I command it to wither away now, in Jesus' name.</div>
-          <div class="prayer-item"><i class="fas fa-check-circle"></i> Father, help me to hear Your voice clearly and to obey Your words without hesitation, proving that I am truly of God.</div>
-          <div class="prayer-item"><i class="fas fa-check-circle"></i> I declare that my life will draw others to You, because they will see Your family resemblance in me.</div>
+          <div class="prayer-item"><i class="fas fa-check-circle"></i> Father, forgive me for any way I have despised my spiritual birthright.</div>
+          <div class="prayer-item"><i class="fas fa-check-circle"></i> I renounce every trade of my inheritance for temporary pleasure.</div>
+          <div class="prayer-item"><i class="fas fa-check-circle"></i> Lord, restore the years that the locust has eaten and renew my covenant identity.</div>
+          <div class="prayer-item"><i class="fas fa-check-circle"></i> I bind the spirit of Esau – worldliness, impulsiveness, and disregard for holy things.</div>
+          <div class="prayer-item"><i class="fas fa-check-circle"></i> Father, give me a hunger for the things of the Spirit that outweighs every fleshly appetite.</div>
+          <div class="prayer-item"><i class="fas fa-check-circle"></i> I declare that I am a joint-heir with Christ; my birthright is secure in Him.</div>
+          <div class="prayer-item"><i class="fas fa-check-circle"></i> Let every plan of the enemy to steal my destiny be scattered now, in Jesus' name.</div>
+          <div class="prayer-item"><i class="fas fa-check-circle"></i> I receive grace to walk in the fullness of my priestly calling.</div>
+          <div class="prayer-item"><i class="fas fa-check-circle"></i> Father, surround me with voices that remind me of my royal identity.</div>
+          <div class="prayer-item"><i class="fas fa-check-circle"></i> I go from strength to strength, possessing my inheritance in Christ.</div>
         </div>
       </div>
 
@@ -651,8 +693,8 @@
       <div class="encouragement-box">
         <i class="fas fa-feather" style="font-size: 2.5rem; color: var(--accent-terra);"></i>
         <h2 style="font-size: 2rem;">Word of Encouragement</h2>
-        <p style="margin: 1.5rem 0;">Beloved, do not be discouraged by the reflection you saw in the mirror of God's word today. If you look and see areas where the world's image is stronger than God's, take heart! We are not called to clean ourselves up so we can come to the Father; we come to the Father so He can clean us up. Your identity is not based on your perfection, but on your position in Christ. You are a son! And because you are a son, the DNA of heaven is inside you. Act like it. Talk like it. Walk like it. The world is waiting for the manifestation of the sons of God. Arise and shine, for your light has come, and the glory of the Lord is risen upon you!</p>
-        <p><i class="fas fa-hand-peace"></i> God bless you. Go and show the world whose son you are!</p>
+        <p style="margin: 1.5rem 0;">Beloved, you are not Esau. You have the Spirit of the living God dwelling in you, and He empowers you to choose the eternal over the temporal. If you have made mistakes, the blood of Jesus still speaks for you. Today, rise and reclaim your birthright. You are a royal priest, a chosen generation. Walk in that truth!</p>
+        <p><i class="fas fa-hand-peace"></i> You are more than a conqueror through Christ who loves you.</p>
         <div style="font-family: 'Playfair Display'; font-size: 1.5rem; margin-top: 2rem;">— Apostle D.S.A. Solomon</div>
       </div>
     </div>
@@ -668,7 +710,7 @@
     </div>
   </div>
 
-  <!-- Contact Section -->
+  <!-- Contact Section (with updated phone & email) -->
   <section id="contact">
     <div class="container">
       <h2 class="section-title">Connect with us</h2>
@@ -681,23 +723,39 @@
         <div class="contact-card">
           <i class="fas fa-phone-alt" style="font-size: 2rem; color: var(--primary);"></i>
           <h3 style="margin: 1rem 0;">Call</h3>
-          <p>+234 8034212065</p>
+          <p>803 421 2065</p>   <!-- updated phone -->
         </div>
         <div class="contact-card">
           <i class="fas fa-envelope" style="font-size: 2rem; color: var(--primary);"></i>
           <h3 style="margin: 1rem 0;">Email</h3>
-          <p>@trueworshippers.ministry </br>@gmail.com</p>
+          <p>trueworshippers.ministries</br>@gmail.com</p>   <!-- updated email -->
         </div>
         <div class="contact-card">
           <i class="fas fa-share-alt" style="font-size: 2rem; color: var(--primary);"></i>
           <h3 style="margin: 1rem 0;">Social</h3>
           <div class="contact-social">
             <a href="#"><i class="fab fa-facebook"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a></br>
             <a href="#"><i class="fab fa-youtube"></i></a>
-                     <a href="#"><i class="fab fa-telegr"></i></a>
+            <a href="#"><i class="fab fa-telegram"></i></a>
           </div>
         </div>
+      </div>
+
+      <!-- Netlify Form -->
+      <div class="contact-form">
+        <h3 style="font-size: 2rem; margin-bottom: 2rem; text-align: center;">Send us a message</h3>
+        <form name="contact" method="POST" data-netlify="true">
+          <input type="hidden" name="form-name" value="contact" />
+          <label>Your Name: <input type="text" name="name" required /></label>
+          <label>Your Email: <input type="email" name="email" required /></label>
+          
+          </label>
+          <label>Message: <textarea name="message" rows="4" required></textarea></label>
+          <p>
+            <button type="submit">Send Message</button>
+          </p>
+        </form>
       </div>
     </div>
   </section>
@@ -723,14 +781,14 @@
       const shareBtn = document.getElementById('shareBtn');
       shareBtn.addEventListener('click', function() {
         if (navigator.share) {
-          navigator.share({ title: 'Who\'s Son Are You?', text: 'Daily devotional by Apostle Segun & Rev. Debby', url: window.location.href });
+          navigator.share({ title: 'The Battle for the Birthright', text: 'Daily devotional by Apostle Segun & Rev. Debby', url: window.location.href });
         } else {
           navigator.clipboard?.writeText(window.location.href).then(() => alert('Link copied!'));
         }
       });
       document.getElementById('printBtn').addEventListener('click', () => window.print());
 
-      let likeCount = 128, liked = false;
+      let likeCount = 143, liked = false;
       const likeBtn = document.getElementById('likeBtn');
       const likeSpan = document.getElementById('likeCount');
       likeBtn.addEventListener('click', function() {
