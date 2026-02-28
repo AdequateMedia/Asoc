@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Adequate Success Online College – affordable, faith‑based, accredited online education. Explore courses, tuition, and enroll today.">
+    <!-- Open Graph / Social Media Sharing Meta Tags (using the flyer design) -->
+    <meta property="og:title" content="Adequate Success Online University – 100% Tuition Free!" />
+    <meta property="og:description" content="Learn AI, Web Design, Excel & MS PPT. Get certified with flexible schedules. No tuition fees! Join us today." />
+    <!-- For actual deployment, replace with your hosted image URL. We use a data URI representation of the flyer text as a fallback (simple styled card) but platforms need a real image. 
+         In practice, upload the flyer image to your server and use its URL. Here we use a placeholder that points to the site root – you should replace with actual image path. -->
+    <meta property="og:image" content="https://asou-edu.netlify.app/og-image.png" />
+    <meta property="og:url" content="https://asou-edu.netlify.app" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="og:type" content="website" />
     <title>Adequate Success Online College</title>
     <style>
         * { box-sizing: border-box; margin: 0; }
@@ -67,6 +76,66 @@
         .upload-btn-wrapper { position: relative; overflow: hidden; display: inline-block; }
         .upload-btn-wrapper input[type=file] { position: absolute; left: 0; top: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
         .thumbnail { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #0a2a43; }
+        /* Flyer / Promo Card Styles (clickable) */
+        .promo-flyer {
+            background: linear-gradient(145deg, #f9c74f, #f9844a);
+            color: #0a2a43;
+            padding: 2rem;
+            border-radius: 40px;
+            text-align: center;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.2);
+            border: 4px solid white;
+            max-width: 600px;
+            margin: 2rem auto;
+            transition: transform 0.2s;
+        }
+        .promo-flyer:hover {
+            transform: scale(1.02);
+            box-shadow: 0 25px 35px rgba(0,0,0,0.3);
+        }
+        .promo-flyer h2 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-shadow: 2px 2px 0 rgba(255,255,255,0.5);
+        }
+        .promo-flyer .free-badge {
+            background: #0a2a43;
+            color: #ff9800;
+            font-size: 3rem;
+            font-weight: bold;
+            padding: 0.5rem 2rem;
+            border-radius: 60px;
+            display: inline-block;
+            margin: 1rem 0;
+        }
+        .promo-flyer ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-weight: bold;
+            margin: 1.5rem 0;
+        }
+        .promo-flyer li {
+            background: rgba(255,255,255,0.4);
+            padding: 0.5rem 1.5rem;
+            border-radius: 40px;
+        }
+        .promo-flyer .call-us {
+            font-size: 1.8rem;
+            background: white;
+            color: #0a2a43;
+            padding: 0.5rem 2rem;
+            border-radius: 50px;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+        .promo-flyer a {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
         @media (max-width: 700px) { header { flex-direction: column; } nav { justify-content: center; margin-top: 0.8rem; } }
     </style>
 </head>
@@ -94,6 +163,27 @@
         <p>Accredited online programs · Flexible schedules · Rooted in values</p>
         <button class="button" onclick="showSection('courses')" style="margin-top:25px;">Explore Programs</button>
     </div>
+
+    <!-- ===== CLICKABLE PROMO FLYER ===== -->
+    <a href="https://asou-edu.netlify.app" target="_blank" style="text-decoration: none;">
+        <div class="promo-flyer">
+            <h2>ADEQUATESUCCESS<br>ONLINE UNIVERSITY</h2>
+            <p style="font-size:1.5rem;">LEARN & GROW YOUR FUTURE!</p>
+            <div class="free-badge">100% TUITION FREE!</div>
+            <p style="font-size:1.2rem;">www.asou-edu.netlify.app</p>
+            <p style="font-size:1.3rem; font-weight:bold;">Acquire In-Demand Skills Online!</p>
+            <ul>
+                <li>LEARN AI</li>
+                <li>WEB DESIGN</li>
+                <li>EXCEL & MS PPT</li>
+                <li>FREE HOSTING & DOMAIN</li>
+            </ul>
+            <div class="call-us">CALL: 09075614558</div>
+            <p style="margin-top:1.5rem;">No Tuition Fees! Learn Anytime, Anywhere!</p>
+            <p style="font-size:1.2rem;">- CERTIFICATE COURSES - FLEXIBLE SCHEDULE - GLOBAL LEARNING</p>
+        </div>
+    </a>
+
     <div class="grid-2" style="margin-top:2rem;">
         <div class="card"><h3>🎓 Why Choose Us?</h3><p>Since 2010, we’ve helped over 5,000 students achieve their goals with affordable, Christ‑centered online education. Small classes, dedicated mentors.</p></div>
         <div class="card"><h3>⏳ Flexible Learning</h3><p>100% online, self‑paced courses with weekly live sessions. Balance work, family, and studies.</p></div>
@@ -894,8 +984,8 @@
     // ---------- SHARE FUNCTION (Web Share API) ----------
     function shareSite() {
         const shareData = {
-            title: 'Adequate Success Online College',
-            text: 'Explore affordable, faith‑based accredited online programs. Flexible schedules, values‑driven education.',
+            title: 'Adequate Success Online University – 100% Tuition Free!',
+            text: 'Learn AI, Web Design, Excel & more. Get certified with flexible schedules. No tuition fees!',
             url: window.location.href
         };
         if (navigator.share) {
@@ -910,7 +1000,7 @@
             textarea.select();
             try {
                 document.execCommand('copy');
-                alert('Link copied to clipboard! You can share it manually.');
+                alert('Link copied to clipboard! You can share it manually.\n\nThe shared link will include our promotional image if you have uploaded the flyer to your server and set the og:image meta tag.');
             } catch (err) {
                 alert('Your browser does not support sharing. You can copy the URL from the address bar.');
             }
@@ -965,21 +1055,10 @@
         }
     };
 </script>
-<!-- All necessary information: accreditation, faculty, tuition, contact, courses, faith-based mission, full enrollment system with localStorage. -->
-<!-- Admin can add/delete courses & courseware; students select from official list. -->
-<!-- Contact form uses Netlify (detected via data-netlify) and submits via AJAX with success message. -->
-<!-- Admin has "Student Results" table with inline grade editing, delete, and certificate toggle. -->
-<!-- Added "Download All Student Details (CSV)" button in admin results card. -->
-<!-- Student signup collects full name, email, phone; these pre-fill the enrollment form. -->
-<!-- Courseware system: admin can add materials per course; approved students see them in dashboard. -->
-<!-- Opay payment account 8034212065 with name Adrbowale Segun Solomon displayed on Tuition page and student dashboard. -->
-<!-- Students can upload passport photo on their dashboard, stored as base64 in their profile. -->
-<!-- Admin now has a "Student Directory" card showing all registered students with details and passport thumbnails. -->
-<!-- Management team updated: Solomon Daniel VC, Deborah Solomon Director of Dean, Adebowale Segun Dean of Faculty, Adebowale Daniel Admin, Funmilayo Adebowale Registrar. -->
-<!-- Course list updated to include AI, Excel, MS Office, Web Design, and related programs. -->
-<!-- Added "Share" button in navigation that uses Web Share API (with fallback copy link) -->
-<!-- Admin can reject enrollments, delete them entirely, and reset the whole student directory. -->
-<!-- Certificate download is now controlled by admin via a toggle in the Student Results table. Students can only download when admin explicitly allows. -->
-<!-- Certificate now includes the student's passport photo if uploaded, otherwise a placeholder. -->
+<!-- 
+    Open Graph image: For the image to appear when sharing, you must upload the flyer image to your server 
+    (e.g., as /og-image.png) and ensure the og:image meta tag points to the correct URL. 
+    The clickable flyer above is an HTML representation that links back to the site.
+-->
 </body>
 </html>
