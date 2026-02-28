@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Adequate Success Online College – affordable, faith‑based, accredited online education. Explore courses, tuition, and enroll today.">
     <!-- Open Graph / Social Media Sharing Meta Tags (using the flyer design) -->
-    <meta property="og:title" content="Adequate Success Online University – 100% Tuition Free!" />
-    <meta property="og:description" content="Learn AI, Web Design, Excel & MS PPT. Get certified with flexible schedules. No tuition fees! Join us today." />
-    <!-- For actual deployment, replace with your hosted image URL. We use a data URI representation of the flyer text as a fallback (simple styled card) but platforms need a real image. 
-         In practice, upload the flyer image to your server and use its URL. Here we use a placeholder that points to the site root – you should replace with actual image path. -->
+    <meta property="og:title" content="Adequate Success Online University – Sign up for free courses!" />
+    <meta property="og:description" content="Learn AI, Web Design, Excel & MS PPT. Get certified with flexible schedules. No tuition fees! Join now." />
+    <!-- For actual deployment, replace with your hosted image URL. We use a placeholder that should point to your flyer image. -->
     <meta property="og:image" content="https://asou-edu.netlify.app/og-image.png" />
     <meta property="og:url" content="https://asou-edu.netlify.app" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -152,7 +151,7 @@
         <a onclick="showSection('signup')">Sign Up</a>
         <a onclick="showSection('studentLogin')">Student Login</a>
         <a onclick="showSection('adminLogin')">Admin Login</a>
-        <a onclick="shareSite()">📤 Share</a>
+        <a onclick="shareSite()">📤 Share</a>   <!-- updated label -->
     </nav>
 </header>
 
@@ -176,7 +175,7 @@
                 <li>LEARN AI</li>
                 <li>WEB DESIGN</li>
                 <li>EXCEL & MS PPT</li>
-                <li>FREE HOSTING & DOMAIN</li>
+                <li>PAY HOSTING & DOMAIN</li>
             </ul>
             <div class="call-us">CALL: 09075614558</div>
             <p style="margin-top:1.5rem;">No Tuition Fees! Learn Anytime, Anywhere!</p>
@@ -381,6 +380,8 @@
             let successDiv = document.getElementById('contactSuccess');
             if (successDiv) successDiv.classList.add('hidden');
         }
+        // Update hash to reflect section (optional)
+        window.location.hash = id;
     }
 
     // display courses from db on public page
@@ -981,12 +982,14 @@
         win.close();
     }
 
-    // ---------- SHARE FUNCTION (Web Share API) ----------
+    // ---------- SHARE FUNCTION (Web Share API) - now points to signup ----------
     function shareSite() {
+        // Build URL with hash #signup
+        const shareUrl = window.location.origin + window.location.pathname + '#signup';
         const shareData = {
-            title: 'Adequate Success Online University – 100% Tuition Free!',
-            text: 'Learn AI, Web Design, Excel & more. Get certified with flexible schedules. No tuition fees!',
-            url: window.location.href
+            title: 'Adequate Success Online University – Sign up for free courses!',
+            text: 'Join now to learn AI, Web Design, Excel & more. No tuition fees! Get certified.',
+            url: shareUrl
         };
         if (navigator.share) {
             navigator.share(shareData)
@@ -995,12 +998,12 @@
         } else {
             // Fallback: prompt to copy link
             const textarea = document.createElement('textarea');
-            textarea.value = window.location.href;
+            textarea.value = shareUrl;
             document.body.appendChild(textarea);
             textarea.select();
             try {
                 document.execCommand('copy');
-                alert('Link copied to clipboard! You can share it manually.\n\nThe shared link will include our promotional image if you have uploaded the flyer to your server and set the og:image meta tag.');
+                alert('Signup link copied to clipboard! Share it with friends.\n\nThe link will open directly on the signup page.');
             } catch (err) {
                 alert('Your browser does not support sharing. You can copy the URL from the address bar.');
             }
@@ -1039,18 +1042,28 @@
         showSection("home");
     }
 
-    // ---------- AUTO-RESTORE SESSION & INIT ----------
+    // ---------- AUTO-RESTORE SESSION & HASH ROUTING ----------
     window.onload = function() {
+        // Check for user session first
         let currentUser = localStorage.getItem("currentUser");
         let currentAdmin = localStorage.getItem("currentAdmin");
         if (currentUser) {
             try {
                 let u = JSON.parse(currentUser);
                 showStudentDashboard(u);
+                return;
             } catch { }
         } else if (currentAdmin) {
             showAdminDashboard();
+            return;
+        }
+
+        // If no active session, handle hash for direct signup link
+        if (window.location.hash === '#signup') {
+            showSection('signup');
         } else {
+            // Default to home
+            showSection('home');
             renderPublicCourses();
         }
     };
@@ -1059,6 +1072,7 @@
     Open Graph image: For the image to appear when sharing, you must upload the flyer image to your server 
     (e.g., as /og-image.png) and ensure the og:image meta tag points to the correct URL. 
     The clickable flyer above is an HTML representation that links back to the site.
+    Share button now points to #signup so new users land directly on the signup form.
 -->
 </body>
 </html>
