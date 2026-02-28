@@ -24,6 +24,8 @@
         .button.danger:hover { background: #a93226; }
         .button.secondary { background: #2c3e50; }
         .button.secondary:hover { background: #1e2b37; }
+        .button.success { background: #27ae60; }
+        .button.success:hover { background: #1e8449; }
         input, select, textarea { padding: 12px; margin: 10px 0; width: 100%; max-width: 450px; border: 1px solid #ccc; border-radius: 30px; font-size: 1rem; outline: none; }
         input:focus, select:focus { border-color: #0a2a43; box-shadow: 0 0 0 3px rgba(10,42,67,0.2); }
         .card { background: white; padding: 25px; margin: 25px 0; border-radius: 24px; box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
@@ -81,7 +83,6 @@
         <a onclick="showSection('signup')">Sign Up</a>
         <a onclick="showSection('studentLogin')">Student Login</a>
         <a onclick="showSection('adminLogin')">Admin Login</a>
-        <!-- new share button -->
         <a onclick="shareSite()">📤 Share</a>
     </nav>
 </header>
@@ -237,7 +238,7 @@
     let db = {
         users: JSON.parse(localStorage.getItem("users")) || [{ username: "admin", password: "admin123", role: "admin" }],
         enrollments: JSON.parse(localStorage.getItem("enrollments")) || [],
-        grades: JSON.parse(localStorage.getItem("grades")) || [],
+        grades: JSON.parse(localStorage.getItem("grades")) || [],   // each grade: { username, grade, certificateAllowed (boolean) }
         // Updated courses: AI, Excel, MS, Web Design
         courses: JSON.parse(localStorage.getItem("courses")) || [
             "Introduction to Artificial Intelligence",
@@ -261,6 +262,12 @@
         if (!u.phone) u.phone = '';
         if (!u.passport) u.passport = null; // base64 image data
         return u;
+    });
+
+    // Migrate grades to have certificateAllowed (default false)
+    db.grades = db.grades.map(g => {
+        if (g.certificateAllowed === undefined) g.certificateAllowed = false;
+        return g;
     });
 
     function save() {
@@ -402,19 +409,25 @@
                 <select id='courseSelect'>${options}</select><br>
                 <button class='button' onclick='submitEnrollment()'>Submit Enrollment</button>`;
         } else {
-            content += `<p><b>Enrollment status:</b> <span style="color:#b85c00;">${enrolled.status}</span></p>
+            let statusColor = enrolled.status === 'Approved' ? 'green' : (enrolled.status === 'Rejected' ? '#c0392b' : '#b85c00');
+            content += `<p><b>Enrollment status:</b> <span style="color:${statusColor};">${enrolled.status}</span></p>
                 <p><b>Course:</b> ${enrolled.course}</p>`;
-            let grade = db.grades.find(g => g.username === user.username);
-            if (grade) {
-                content += `<p><b>Final grade:</b> ${grade.grade} / 100</p>
-                    <button class='button' onclick='generateCertificate("${user.username}")'>📄 Download Certificate</button>`;
-            } else {
-                content += "<p><i>Grades will appear here once approved by admin.</i></p>";
-            }
 
-            // ----- Courseware for approved students only -----
-            if (enrolled.status === "Approved") {
-                // Also show payment reminder if they haven't paid? (optional)
+            if (enrolled.status === 'Approved') {
+                let grade = db.grades.find(g => g.username === user.username);
+                if (grade) {
+                    content += `<p><b>Final grade:</b> ${grade.grade} / 100</p>`;
+                    // Only show certificate button if admin has allowed it
+                    if (grade.certificateAllowed) {
+                        content += `<button class='button' onclick='generateCertificate("${user.username}")'>📄 Download Certificate (with passport)</button>`;
+                    } else {
+                        content += `<p><i>Certificate not yet approved by admin.</i></p>`;
+                    }
+                } else {
+                    content += "<p><i>Grades will appear here once approved by admin.</i></p>";
+                }
+
+                // ----- Courseware for approved students only -----
                 content += `<div class="payment-details" style="margin-top:15px;">
                     <h4>💳 Tuition Payment</h4>
                     <p>If you haven't paid yet, please use our Opay account:</p>
@@ -437,8 +450,11 @@
                 } else {
                     content += "<p><i>No course materials available yet.</i></p>";
                 }
+            } else if (enrolled.status === 'Rejected') {
+                content += "<p style='color:#c0392b;'><strong>Your enrollment was rejected.</strong> Please contact the admin for assistance.</p>";
             } else {
-                content += "<p><i>Course materials will be available once your enrollment is approved.</i></p>";
+                // Pending
+                content += "<p><i>Your enrollment is pending review. Course materials will appear once approved.</i></p>";
             }
         }
         content += "</div>";
@@ -506,7 +522,7 @@
         showStudentDashboard(user);
     }
 
-    // ---------- ADMIN DASHBOARD (with courseware management + student directory) ----------
+    // ---------- ADMIN DASHBOARD (with reject, delete, reset all, and certificate toggle) ----------
     function showAdminDashboard() {
         showSection("adminDashboard");
         // Enrollment table rows
@@ -515,12 +531,16 @@
             let gradeObj = db.grades.find(g => g.username === e.username);
             enrollRows += `<tr>
                 <td>${e.username}</td><td>${e.name}</td><td>${e.course}</td><td>${e.status}</td>
-                <td><button class="button small" onclick="approveEnrollment('${e.username}')">✓ Approve</button></td>
+                <td>
+                    <button class="button small" onclick="approveEnrollment('${e.username}')">✓ Approve</button>
+                    <button class="button small danger" onclick="rejectEnrollment('${e.username}')">✗ Reject</button>
+                </td>
                 <td><input id='grade_${e.username}' value='${gradeObj ? gradeObj.grade : ""}' placeholder='grade' style='width:70px; display:inline; margin:0;'>
                 <button class="button small" onclick="setGrade('${e.username}')">Save</button></td>
+                <td><button class="button small danger" onclick="deleteEnrollment('${e.username}')">🗑️ Delete</button></td>
             </tr>`;
         });
-        if (enrollRows === '') enrollRows = '<tr><td colspan="6" style="text-align:center;">No enrollments yet.</td></tr>';
+        if (enrollRows === '') enrollRows = '<tr><td colspan="7" style="text-align:center;">No enrollments yet.</td></tr>';
 
         // Build course management UI
         let courseItems = '';
@@ -532,7 +552,7 @@
         });
         if (courseItems === '') courseItems = '<p>No courses added. Use form below to add.</p>';
 
-        // ----- RESULTS SECTION (all grades with delete) -----
+        // ----- RESULTS SECTION (all grades with delete and certificate toggle) -----
         let resultsRows = '';
         db.grades.forEach(g => {
             let enrollment = db.enrollments.find(e => e.username === g.username);
@@ -545,6 +565,9 @@
                     <td class="action-cell">
                         <button class="button small" onclick="updateGradeFromResults('${g.username}')">Update</button>
                         <button class="button small danger" onclick="deleteGrade('${g.username}')">Delete</button>
+                        ${g.certificateAllowed ? 
+                            `<button class="button small success" onclick="toggleCertificate('${g.username}', false)">✅ Revoke Cert</button>` : 
+                            `<button class="button small secondary" onclick="toggleCertificate('${g.username}', true)">⏳ Allow Cert</button>`}
                     </td>
                 </tr>`;
             } else {
@@ -556,6 +579,9 @@
                     <td class="action-cell">
                         <button class="button small" onclick="updateGradeFromResults('${g.username}')">Update</button>
                         <button class="button small danger" onclick="deleteGrade('${g.username}')">Delete</button>
+                        ${g.certificateAllowed ? 
+                            `<button class="button small success" onclick="toggleCertificate('${g.username}', false)">✅ Revoke Cert</button>` : 
+                            `<button class="button small secondary" onclick="toggleCertificate('${g.username}', true)">⏳ Allow Cert</button>`}
                     </td>
                 </tr>`;
             }
@@ -597,20 +623,26 @@
         let adminHtml = `
             <div class="card">
                 <h3>👩‍🏫 Enrollment Management</h3>
-                <table><tr><th>User</th><th>Name</th><th>Course</th><th>Status</th><th>Approve</th><th>Grade</th></tr>${enrollRows}</table>
+                <table>
+                    <tr><th>User</th><th>Name</th><th>Course</th><th>Status</th><th>Actions</th><th>Grade</th><th>Delete</th></tr>
+                    ${enrollRows}
+                </table>
             </div>
             <div class="card">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 15px;">
-                    <h3>📊 Student Results (all grades)</h3>
+                    <h3>📊 Student Results (all grades) – Certificate control</h3>
                     <button class="button secondary small" onclick="downloadStudentDetailsCSV()">📥 Download All Student Details (CSV)</button>
                 </div>
                 <table>
-                    <tr><th>Student name</th><th>Username</th><th>Course</th><th>Grade</th><th>Actions</th></tr>
+                    <tr><th>Student name</th><th>Username</th><th>Course</th><th>Grade</th><th>Actions (incl. certificate)</th></tr>
                     ${resultsRows}
                 </table>
             </div>
             <div class="card">
-                <h3>📋 Student Directory (All Registered Students)</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 15px;">
+                    <h3>📋 Student Directory (All Registered Students)</h3>
+                    <button class="button small danger" onclick="resetStudentDirectory()">⚠️ Reset All Students</button>
+                </div>
                 <table>
                     <tr><th>Username</th><th>Full Name</th><th>Email</th><th>Phone</th><th>Passport</th><th>Enrollment Status</th></tr>
                     ${studentRows}
@@ -646,26 +678,60 @@
         showAdminDashboard();
     }
 
-    // set grade from enrollment table
-    function setGrade(username) {
-        let gradeInput = document.getElementById("grade_" + username)?.value;
-        let existing = db.grades.find(g => g.username === username);
-        if (existing) existing.grade = gradeInput;
-        else db.grades.push({ username, grade: gradeInput });
+    // reject enrollment
+    function rejectEnrollment(username) {
+        let enrollment = db.enrollments.find(e => e.username === username);
+        if (enrollment) enrollment.status = "Rejected";
         save();
-        alert("Grade saved.");
         showAdminDashboard();
     }
 
-    // update grade from results table
+    // delete enrollment and its grade
+    function deleteEnrollment(username) {
+        if (confirm(`Delete enrollment for ${username}? This will also remove any grade.`)) {
+            db.enrollments = db.enrollments.filter(e => e.username !== username);
+            db.grades = db.grades.filter(g => g.username !== username);
+            save();
+            showAdminDashboard();
+        }
+    }
+
+    // set grade from enrollment table (default certificateAllowed = false)
+    function setGrade(username) {
+        let gradeInput = document.getElementById("grade_" + username)?.value;
+        let existing = db.grades.find(g => g.username === username);
+        if (existing) {
+            existing.grade = gradeInput;
+        } else {
+            db.grades.push({ username, grade: gradeInput, certificateAllowed: false });
+        }
+        save();
+        alert("Grade saved. Certificate not allowed by default.");
+        showAdminDashboard();
+    }
+
+    // update grade from results table (keep existing certificateAllowed or default false)
     function updateGradeFromResults(username) {
         let gradeInput = document.getElementById("grade_result_" + username)?.value;
         let existing = db.grades.find(g => g.username === username);
-        if (existing) existing.grade = gradeInput;
-        else db.grades.push({ username, grade: gradeInput });
+        if (existing) {
+            existing.grade = gradeInput;
+        } else {
+            db.grades.push({ username, grade: gradeInput, certificateAllowed: false });
+        }
         save();
-        alert("Grade updated.");
+        alert("Grade updated. Certificate setting unchanged.");
         showAdminDashboard();
+    }
+
+    // Toggle certificate allowed for a grade
+    function toggleCertificate(username, newState) {
+        let grade = db.grades.find(g => g.username === username);
+        if (grade) {
+            grade.certificateAllowed = newState;
+            save();
+            showAdminDashboard();
+        }
     }
 
     // ---------- DELETE GRADE (result) ----------
@@ -675,6 +741,20 @@
             save();
             showAdminDashboard();
         }
+    }
+
+    // ---------- RESET ALL STUDENTS (directory) ----------
+    function resetStudentDirectory() {
+        if (!confirm("⚠️ Are you sure? This will permanently delete ALL registered students, their enrollments, and grades. This action cannot be undone.")) return;
+        let studentUsernames = db.users.filter(u => u.role === "student").map(u => u.username);
+        // Remove all students from users
+        db.users = db.users.filter(u => u.role !== "student");
+        // Remove enrollments and grades for those usernames
+        db.enrollments = db.enrollments.filter(e => !studentUsernames.includes(e.username));
+        db.grades = db.grades.filter(g => !studentUsernames.includes(g.username));
+        save();
+        alert("Student directory reset successfully.");
+        showAdminDashboard();
     }
 
     // ---------- COURSE MANAGEMENT (admin) ----------
@@ -738,20 +818,22 @@
 
     // ---------- EXPORT STUDENT DETAILS (CSV) ----------
     function downloadStudentDetailsCSV() {
-        // Headers: Username, Full Name, Email, Course, Enrollment Status, Grade
+        // Headers: Username, Full Name, Email, Course, Enrollment Status, Grade, Certificate Allowed
         let csvRows = [];
-        csvRows.push(['Username', 'Full Name', 'Email', 'Course', 'Enrollment Status', 'Grade'].join(','));
+        csvRows.push(['Username', 'Full Name', 'Email', 'Course', 'Enrollment Status', 'Grade', 'Certificate Allowed'].join(','));
 
         db.enrollments.forEach(enroll => {
             let gradeObj = db.grades.find(g => g.username === enroll.username);
             let grade = gradeObj ? gradeObj.grade : '';
+            let certAllowed = gradeObj ? (gradeObj.certificateAllowed ? 'Yes' : 'No') : '';
             let row = [
                 `"${enroll.username}"`,
                 `"${enroll.name}"`,
                 `"${enroll.email}"`,
                 `"${enroll.course}"`,
                 `"${enroll.status}"`,
-                `"${grade}"`
+                `"${grade}"`,
+                `"${certAllowed}"`
             ];
             csvRows.push(row.join(','));
         });
@@ -769,22 +851,41 @@
         window.URL.revokeObjectURL(url);
     }
 
-    // ---------- CERTIFICATE ----------
+    // ---------- CERTIFICATE with passport photo ----------
     function generateCertificate(username) {
         let user = db.enrollments.find(e => e.username === username);
         let grade = db.grades.find(g => g.username === username);
         if (!user || !grade) { alert("Incomplete data."); return; }
+        if (!grade.certificateAllowed) { alert("Certificate not yet approved by admin."); return; }
+
+        // Get student's full user record for passport
+        let studentUser = db.users.find(u => u.username === username);
+        let passportHtml = '';
+        if (studentUser && studentUser.passport) {
+            passportHtml = `<div style="margin-bottom:20px;"><img src="${studentUser.passport}" style="width:120px; height:120px; border-radius:50%; object-fit:cover; border:4px solid #0a2a43;"></div>`;
+        } else {
+            passportHtml = `<div style="margin-bottom:20px;"><div style="width:120px; height:120px; border-radius:50%; background:#ddd; display:inline-flex; align-items:center; justify-content:center; color:#666; border:4px solid #0a2a43;">No photo</div></div>`;
+        }
+
         let win = window.open("", "_blank");
         win.document.write(`
-            <style>body{font-family:Georgia,serif; padding:40px; text-align:center;}</style>
-            <h2 style="color:#0a2a43;">🎓 Certificate of Completion</h2>
-            <p style="font-size:1.2rem;">This certifies that</p>
-            <h3>${user.name}</h3>
-            <p>has successfully completed the course</p>
-            <h3>${user.course}</h3>
-            <p>with a final grade of <strong>${grade.grade}%</strong></p>
-            <p>Awarded on ${new Date().toLocaleDateString()}</p>
-            <p style="margin-top:40px;"><em>Adequate Success Online College</em></p>
+            <style>
+                body { font-family:Georgia,serif; padding:40px; text-align:center; }
+                .certificate-container { max-width:800px; margin:0 auto; border:2px solid #0a2a43; padding:30px; border-radius:20px; background:#fcf9f0; }
+                h1 { color:#0a2a43; }
+            </style>
+            <div class="certificate-container">
+                <h1>Adequate Success Online College</h1>
+                ${passportHtml}
+                <h2 style="color:#0a2a43;">🎓 Certificate of Completion</h2>
+                <p style="font-size:1.2rem;">This certifies that</p>
+                <h3>${user.name}</h3>
+                <p>has successfully completed the course</p>
+                <h3>${user.course}</h3>
+                <p>with a final grade of <strong>${grade.grade}%</strong></p>
+                <p>Awarded on ${new Date().toLocaleDateString()}</p>
+                <p style="margin-top:40px;"><em>Adequate Success Online College</em></p>
+            </div>
         `);
         win.print();
         win.close();
@@ -867,15 +968,18 @@
 <!-- All necessary information: accreditation, faculty, tuition, contact, courses, faith-based mission, full enrollment system with localStorage. -->
 <!-- Admin can add/delete courses & courseware; students select from official list. -->
 <!-- Contact form uses Netlify (detected via data-netlify) and submits via AJAX with success message. -->
-<!-- Admin has "Student Results" table with inline grade editing and delete button for each result. -->
+<!-- Admin has "Student Results" table with inline grade editing, delete, and certificate toggle. -->
 <!-- Added "Download All Student Details (CSV)" button in admin results card. -->
 <!-- Student signup collects full name, email, phone; these pre-fill the enrollment form. -->
 <!-- Courseware system: admin can add materials per course; approved students see them in dashboard. -->
 <!-- Opay payment account 8034212065 with name Adrbowale Segun Solomon displayed on Tuition page and student dashboard. -->
 <!-- Students can upload passport photo on their dashboard, stored as base64 in their profile. -->
-<!-- Admin now has a "Student Directory" card showing all registered students with their details and passport thumbnails. -->
+<!-- Admin now has a "Student Directory" card showing all registered students with details and passport thumbnails. -->
 <!-- Management team updated: Solomon Daniel VC, Deborah Solomon Director of Dean, Adebowale Segun Dean of Faculty, Adebowale Daniel Admin, Funmilayo Adebowale Registrar. -->
 <!-- Course list updated to include AI, Excel, MS Office, Web Design, and related programs. -->
 <!-- Added "Share" button in navigation that uses Web Share API (with fallback copy link) -->
+<!-- Admin can reject enrollments, delete them entirely, and reset the whole student directory. -->
+<!-- Certificate download is now controlled by admin via a toggle in the Student Results table. Students can only download when admin explicitly allows. -->
+<!-- Certificate now includes the student's passport photo if uploaded, otherwise a placeholder. -->
 </body>
 </html>
